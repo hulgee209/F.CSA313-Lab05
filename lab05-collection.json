@@ -1,0 +1,160 @@
+{
+  "info": {
+    "_postman_id": "b5683a3a-8d02-45fc-bff2-a1b4ddc54d51",
+    "name": "Lab05 - Registration API PASS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "01 - Идэвхтэй оюутан урьдач нөхцөлийг хангаад амжилттай бүртгүүлнэ",
+      "item": [
+        {
+          "name": "Setup - Идэвхтэй оюутан CS201 үзсэн",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\",\n  \"coursesTaken\": [\"CS201\"]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-HAPPY" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup student status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup student result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "Setup - CS201 урьдачтай хичээл",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"prerequisites\": [\"CS201\"]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-HAPPY" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup course status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup course result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Амжилттай бүртгүүлэх",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"studentID\": \"S-HAPPY\",\n  \"courseID\": \"C-HAPPY\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Амжилттай бүртгэл 201 байна', function () { pm.response.to.have.status(201); });", "pm.test('Result OK байна', function () { pm.expect(pm.response.json().result).to.eql('OK'); });", "pm.test('registrationID нь тоо байна', function () { pm.expect(pm.response.json().registrationID).to.be.a('number'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "02 - Байхгүй оюутан ERROR_NO_STUDENT авна",
+      "item": [
+        {
+          "name": "Setup - Хичээл үүсгэх",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-NO-STUDENT" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Байхгүй оюутан",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-NOT-FOUND\", \"courseID\": \"C-NO-STUDENT\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Байхгүй оюутны статус 200 байна', function () { pm.response.to.have.status(200); });", "pm.test('ERROR_NO_STUDENT буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_NO_STUDENT'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "03 - Идэвхгүй оюутан ERROR_INACTIVE_STUDENT авна",
+      "item": [
+        {
+          "name": "Setup - Идэвхгүй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"inactive\", \"coursesTaken\": [\"CS201\"] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-INACTIVE" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "Setup - Хичээл үүсгэх",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-INACTIVE" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Идэвхгүй оюутан",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-INACTIVE\", \"courseID\": \"C-INACTIVE\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Идэвхгүй оюутны статус 200 байна', function () { pm.response.to.have.status(200); });", "pm.test('ERROR_INACTIVE_STUDENT буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_INACTIVE_STUDENT'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "04 - Байхгүй хичээл ERROR_NO_COURSE авна",
+      "item": [
+        {
+          "name": "Setup - Идэвхтэй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"active\", \"coursesTaken\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-NO-COURSE" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Байхгүй хичээл",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-NO-COURSE\", \"courseID\": \"C-NOT-FOUND\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Байхгүй хичээлийн статус 200 байна', function () { pm.response.to.have.status(200); });", "pm.test('ERROR_NO_COURSE буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_NO_COURSE'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "05 - Урьдач нөхцөл дутуу үед ERROR_PREREQUISITES авна",
+      "item": [
+        {
+          "name": "Setup - CS201 үзээгүй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"active\", \"coursesTaken\": [\"CS101\"] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-MISSING-PREREQ" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "Setup - CS201 урьдачтай хичээл",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [\"CS201\"] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-MISSING-PREREQ" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Урьдач нөхцөл дутуу",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-MISSING-PREREQ\", \"courseID\": \"C-MISSING-PREREQ\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Урьдач нөхцөл дутуугийн статус 200 байна', function () { pm.response.to.have.status(200); });", "pm.test('ERROR_PREREQUISITES буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_PREREQUISITES'); });", "pm.test('missing нь CS201 агуулна', function () { pm.expect(pm.response.json().missing).to.include('CS201'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "06 - Давхар алдаа: идэвхгүй оюутан нь байхгүй хичээлээс түрүүлж шалгагдана",
+      "item": [
+        {
+          "name": "Setup - Идэвхгүй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"inactive\", \"coursesTaken\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-DOUBLE-ERROR" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Идэвхгүй ба байхгүй хичээл",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-DOUBLE-ERROR\", \"courseID\": \"C-DOUBLE-NOT-FOUND\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Давхар алдааны статус 200 байна', function () { pm.response.to.have.status(200); });", "pm.test('ERROR_INACTIVE_STUDENT түрүүлж буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_INACTIVE_STUDENT'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "07 - Урьдач нөхцөлгүй хичээлд хоосон coursesTaken-тэй оюутан бүртгүүлнэ",
+      "item": [
+        {
+          "name": "Setup - Хоосон coursesTaken-тэй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"active\", \"coursesTaken\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-NO-PREREQ" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "Setup - Урьдач нөхцөлгүй хичээл",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-NO-PREREQ" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - Урьдач нөхцөлгүй хичээл",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-NO-PREREQ\", \"courseID\": \"C-NO-PREREQ\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Урьдач нөхцөлгүй бүртгэл 201 байна', function () { pm.response.to.have.status(201); });", "pm.test('Result OK байна', function () { pm.expect(pm.response.json().result).to.eql('OK'); });", "pm.test('registrationID нь тоо байна', function () { pm.expect(pm.response.json().registrationID).to.be.a('number'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "08 - studentID дутуу үед ERROR_BAD_REQUEST авна",
+      "item": [
+        {
+          "name": "Setup - Хичээл үүсгэх",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-ONLY" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup status is 200', function () { pm.response.to.have.status(200); });", "pm.test('Setup result is OK', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        },
+        {
+          "name": "POST - studentID дутуу",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"courseID\": \"C-ONLY\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Талбар дутуугийн статус 400 байна', function () { pm.response.to.have.status(400); });", "pm.test('ERROR_BAD_REQUEST буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_BAD_REQUEST'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "09 - Буруу JSON үед ERROR_BAD_JSON авна",
+      "item": [
+        {
+          "name": "POST - Буруу JSON",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ invalid-json", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Буруу JSON-ийн статус 400 байна', function () { pm.response.to.have.status(400); });", "pm.test('ERROR_BAD_JSON буцна', function () { pm.expect(pm.response.json().result).to.eql('ERROR_BAD_JSON'); });"] } }]
+        }
+      ]
+    }
+  ]
+}

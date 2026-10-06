@@ -1,0 +1,30 @@
+{
+  "info": {
+    "_postman_id": "cd923a63-987e-4dc0-b5c8-cf89828bdb1f",
+    "name": "Lab05 - Registration API intentional FAIL",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "Зориудын буруу oracle - 201-г 200 гэж хүлээнэ",
+      "item": [
+        {
+          "name": "Setup - Идэвхтэй оюутан",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"active\", \"coursesTaken\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/students/S-FAIL" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup student status is 200', function () { pm.response.to.have.status(200); });"] } }]
+        },
+        {
+          "name": "Setup - Урьдач нөхцөлгүй хичээл",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"prerequisites\": [] }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/courses/C-FAIL" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Setup course status is 200', function () { pm.response.to.have.status(200); });"] } }]
+        },
+        {
+          "name": "POST - Зориуд буруу статусын oracle",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"studentID\": \"S-FAIL\", \"courseID\": \"C-FAIL\" }", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/registrations" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Зориуд буруу: статус 200 байх ёстой', function () { pm.response.to.have.status(200); });", "pm.test('Жинхэнэ result OK байна', function () { pm.expect(pm.response.json().result).to.eql('OK'); });"] } }]
+        }
+      ]
+    }
+  ]
+}
