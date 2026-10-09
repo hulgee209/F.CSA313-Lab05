@@ -60,14 +60,18 @@ node server.js
 | Ажиллуулалт | Бүтэн output | Assertions | Failed | Exit code |
 |---|---|---:|---:|---:|
 | PASS | [`results/newman-pass.txt`](results/newman-pass.txt) | 45 | 0 | 0 |
-| FAIL | [`results/newman-fail.txt`](results/newman-fail.txt) | 4 | 1 | 1 |
+| FAIL (хуучин 3 хүсэлттэй collection) | [`results/newman-fail.txt`](results/newman-fail.txt) | 4 | 1 | 1 |
 | DOWN | [`results/newman-down.txt`](results/newman-down.txt) | 45 | 45 | 1 |
 
 PASS collection нь 9 бие даасан scenario, 21 request, 45 assertion ажиллуулж
-алдаагүй дууссан. FAIL output нь тусдаа `lab05-collection-fail.json` дахь
-амжилттай бүртгэлийн 201 статусыг зориуд 200 гэж хүлээсэн oracle-оос үүссэн
-ганц failure-г хадгалсан. DOWN output дахь `ECONNREFUSED 127.0.0.1:3000` нь
-сервер унтарсан үеийн интерфейсийн холболтын алдаа бөгөөд response-ийн утгыг
+алдаагүй дууссан. Одоогийн FAIL collection нь PASS collection-ийн бүтэн хуулбар
+бөгөөд амжилттай бүртгэлийн HTTP статусын ганц oracle-ийг зориуд 200 болгож
+өөрчилсөн; нийт 21 request-тэй. `results/newman-fail.txt` нь өмнөх 3 request-тэй
+FAIL collection-ийн 4 assertion-ы үр дүн тул шинэ collection-ий ажиллуулалтын
+нотолгоо биш. Энэ орчинд Node.js/Newman байхгүй учир шинэ үр дүнг дахин
+үүсгээгүй; эцсийн илгээлтээс өмнө серверийг шинээр асааж FAIL collection-ийг
+ажиллуулаад log-ийг шинэчилнэ. DOWN output дахь `ECONNREFUSED 127.0.0.1:3000`
+нь сервер унтарсан үеийн интерфейсийн холболтын алдаа бөгөөд response-ийн утгыг
 буруу хүлээсэн oracle-ийн алдаа биш юм.
 
 ## Дүгнэлт
