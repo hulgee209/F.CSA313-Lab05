@@ -5,13 +5,10 @@
 
 ## Орчин
 
-```text
-node -v
-v22.14.0
-
-newman -v
-6.2.2
-```
+| Хэрэгсэл | Хувилбар |
+|---|---:|
+| Node.js | `v22.14.0` |
+| Newman | `6.2.2` |
 
 ## Сонголт ба төлөөлөх утгууд
 
@@ -52,8 +49,19 @@ newman -v
 node server.js
 ```
 
-Өөр терминалд PASS болон FAIL collection-уудыг Newman-аар ажиллуулна. Серверийг
-унтраасны дараа үндсэн collection-ийг дахин ажиллуулж DOWN (`ECONNREFUSED`) нотолгоог авна.
+Өөр терминалд PASS болон FAIL collection-уудыг ажиллуулна:
+
+```powershell
+newman run lab05-collection.json
+newman run lab05-collection-fail.json
+```
+
+Серверийг унтраасны дараа PASS collection-ийг дахин ажиллуулж DOWN
+(`ECONNREFUSED`) нотолгоог авна:
+
+```powershell
+newman run lab05-collection.json
+```
 
 ## Newman ажиллуулалтын үр дүн
 
